@@ -1,9 +1,8 @@
 
-import config
 import sys
 import numpy as np
 import pickle
-from session_iterator import SessionIterator
+from behavioral_performance.tools.session_iterator import SessionIterator 
 from matplotlib import pyplot as plt
 import pandas as pd
 import statsmodels.api as sm
