@@ -19,7 +19,7 @@ class SessionIterator(object):
         self.filterList = {'task': ['deterministic','probabilistic'],
                          'drug': ['saline', 'muscimol','Saline','Musc'],
                          'ROI': ['PL','OFC','ipsi','x','mPFC','Saline'],
-                         'training' : ['Naive','Trained']}
+                         'training' : ['Naive','Training','Trained']}
 
         if filters is None:
             filters = []
@@ -40,17 +40,21 @@ class SessionIterator(object):
             else:
                 print 'term not found: %s' %cond
 
+        #can only look at Naive/Training/Trained datasets
+        assert len(filterQuery['training']) == 1
+
         #if a condition is not present, include everything
         for field in ['task', 'drug', 'ROI']:
             if len(filterQuery[field]) == 0:
                 filterQuery[field] = self.filterList[field]
-        #can only look at Naive or Trained datasets
-        assert len(filterQuery['training']) == 1
+
 
         #second step - retrieve the appropriate sessions
         out = []
         if filterQuery['training'][0] == 'Naive':
             trialMinimum = 20
+        elif filterQuery['training'][0] == 'Training':
+            trialMinimum = 50
         elif filterQuery['training'][0] == 'Trained':
             trialMinimum = 50
 
@@ -59,6 +63,7 @@ class SessionIterator(object):
                 for fname in fileList:
                     if fname == 'log.txt':
                         sess = Session(PATH = dirName + '/')
+
                         sessPass = [0,0,0,0]
                         for entry in filterQuery['ROI']:
                             if sess.regime.find(entry) >= 0:
@@ -74,13 +79,24 @@ class SessionIterator(object):
                         if filterQuery['training'][0] == 'Naive':
                             if sess.header['notes'].find('Naive') >= 0:
                                 sessPass[3] += 1
+                        if filterQuery['training'][0] == 'Training':
+                            if sess.header['notes']=='TRAINING':
+                                sessPass[3] += 1
                         elif filterQuery['training'][0] == 'Trained':
                             if sess.header['notes'].find('Naive') < 0:
                                 sessPass[3] += 1
 
                         #if all criteria were met
-                        if sum(sessPass) == len(sessPass) \
-                        and len(sess.info) >= trialMinimum:
-                            out.append(dirName)
+                        if filterQuery['training'][0] == 'Naive' \
+                        or filterQuery['training'][0] == 'Trained':
+                            if sum(sessPass) == len(sessPass) \
+                            and len(sess.info) >= trialMinimum:
+                                print sess.header
+                                out.append(dirName + '/')
+                        elif filterQuery['training'][0] == 'Training':
+                            if (sessPass[1] + sessPass[3])  == 2 \
+                            and len(sess.info) >= trialMinimum:
+                                print sess.header
+                                out.append(dirName + '/')
 
         return out

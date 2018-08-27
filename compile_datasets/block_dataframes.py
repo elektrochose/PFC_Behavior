@@ -15,10 +15,6 @@ A variable with creating these is whether and how to center continuous variables
 such as timing and uncertainty
 '''
 
-
-
-
-
 ROOT = os.environ['HOME'] + '/python/'
 
 #defining some useful functions
@@ -83,7 +79,7 @@ notes_to_infusion_string = {'OFC-saline' : 'OFC-saline',
 #load datasets
 datasets = [('deterministic', 'Trained','DSR'),
 			('probabilistic', 'Trained','PSR'),
-			('deterministic', 'Naive','Naive')]
+			('deterministic', 'Naive', 'Naive')]
 for regime, training, savefile in datasets:
 
 	sessions = SI.SessionIterator([regime, training])
@@ -100,7 +96,7 @@ for regime, training, savefile in datasets:
 
 	index = [0] * len(blocks)
 	for sessIndex, sessPath in enumerate(sessions.sessionList):
-		sess = SC.Session(sessPath + '/')
+		sess = SC.Session(sessPath)
 		for block in range(min(len(blocks),
 								len(sess.info.groupby(axis=0, level='block')))):
 			B1 = sess.info.loc[block + 1]
@@ -198,7 +194,7 @@ for regime, training, savefile in datasets:
 
 	#drop empty rows
 	out.dropna(inplace=True)
-
+	center_columns(out, ['Timing'])
 	#fill in ordering
 	if training == 'Trained':
 		#assert proper infusion string length

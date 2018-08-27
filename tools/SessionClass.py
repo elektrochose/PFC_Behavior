@@ -8,6 +8,9 @@ ROOT = os.environ['HOME'] + '/python/'
 class Session(object):
 
     def __init__(self, PATH = ROOT + '/cleanDATA/Cohort2/1/2_3_2017/'):
+        if not os.path.isdir(PATH):
+            print 'Session not found.'
+            break
         header, info = session_text_extractor(PATH)
         self.add_block_info(info)
         self.header = header
