@@ -8,9 +8,7 @@ ROOT = os.environ['HOME'] + '/python/'
 class Session(object):
 
     def __init__(self, PATH = ROOT + '/cleanDATA/Cohort2/1/2_3_2017/'):
-        if not os.path.isdir(PATH):
-            print 'Session not found.'
-            break
+
         header, info = session_text_extractor(PATH)
         self.add_block_info(info)
         self.header = header
@@ -64,8 +62,8 @@ class Session(object):
         return
 
     def reduced_df(self):
-        self.info['Choice1'] = (self.info['Choice1'] == 8).astype('int16')
-        self.info['Choice2'] = (self.info['Choice2'] == 11).astype('int16')
+        self.info['preChoice'] = (self.info['preChoice'] == 8).astype('int16')
+        self.info['Choice'] = (self.info['Choice'] == 11).astype('int16')
         self.info['GA'] = (self.info['GA'] == 2).astype('int16')
         for field in ['SA','Correct','AR']:
             self.info[field] = self.info[field].astype('int16')

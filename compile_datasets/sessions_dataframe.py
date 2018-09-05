@@ -72,6 +72,9 @@ for regime, training, savefile in datasets:
 		block_array = []
 		trial_array = []
 		tmp_sessions = [sess for sess in sessions if sess.ratID == rat]
+		if training == 'Training':
+			#only care about choronological order during training
+			tmp_sessions.sort(key = lambda x: x.dateObj)
 		for sess_index, sess in enumerate(tmp_sessions):
 			for block, trial in zip(*sess.info.index.labels):
 				rat_array.append(rat)
@@ -99,7 +102,7 @@ for regime, training, savefile in datasets:
 	out = pd.concat(out, axis = 0)
 	#convert appropriate columns to integers, no need for floats
 	for column in ['SA','GA','Correct','AR',
-				   'Choice1', 'Choice2']:
+				   'preChoice', 'Choice']:
 		out.loc[:,column] =  out.loc[:,column].astype('int16')
 	out.sort_index(axis = 0, inplace = True)
 	out.sort_index(axis = 1, inplace = True)

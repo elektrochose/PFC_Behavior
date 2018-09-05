@@ -24,7 +24,8 @@ cong = lambda sess: float(np.sum(sess['Correct'] == sess['AR'])) \
 
 def center_columns(dataframe, list_columns):
 	for column in list_columns:
-		dataframe[column] = dataframe[column] - np.nanmean(dataframe[column])
+		dataframe[column] = \
+			(dataframe[column] - np.nanmean(dataframe[column])) / np.nanstd(dataframe[column])
 	return
 
 
@@ -145,7 +146,7 @@ for regime, training, savefile in datasets:
 			out.loc[idx[blocks[block], index[block]],'Notes'] = sess.header['notes']
 			out.loc[idx[blocks[block], index[block]],'Infusion_String'] = \
 								notes_to_infusion_string[sess.header['notes']]
-			out.loc[idx[blocks[block], index[block]],'path'] = sessPath + '/'
+			out.loc[idx[blocks[block], index[block]],'path'] = sessPath 
 			#check label is found
 			assert not notes_to_infusion_string[sess.header['notes']] == None
 			index[block] += 1
@@ -174,7 +175,7 @@ for regime, training, savefile in datasets:
 
 	elif regime == 'probabilistic' and training == 'Trained':
 		#centering uncertainty
-		center_columns(out, ['Uncertainty'])
+
 		subjects = ['31', '32', '33', '34', '35', '36',
 					'51', '54', '55', '56', '57']
 
@@ -194,7 +195,7 @@ for regime, training, savefile in datasets:
 
 	#drop empty rows
 	out.dropna(inplace=True)
-	center_columns(out, ['Timing'])
+	center_columns(out, ['Uncertainty', 'Timing'])
 	#fill in ordering
 	if training == 'Trained':
 		#assert proper infusion string length

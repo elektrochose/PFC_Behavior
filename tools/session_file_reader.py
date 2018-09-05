@@ -71,8 +71,8 @@ def session_text_extractor(target = ROOT + "/cleanDATA/Cohort2/1/2_3_2017/"):
 
 		#create panda data frames
 		dfINTinfo = pd.DataFrame(info[:,:-5],
-								 columns = ['SA','GA','Correct','AR','Choice1',
-								 			'Choice2', 'Error', 'Sensor',
+								 columns = ['SA','GA','Correct','AR','preChoice',
+								 			'Choice', 'Error', 'Sensor',
 											'Phase'],
 								 dtype = 'int')
 		dfFLOAT = pd.DataFrame(info[:,-5:],
