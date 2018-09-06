@@ -12,10 +12,8 @@ import pickle
 import time
 import itertools
 import operator
-<<<<<<< HEAD
 import multiprocessing as mp
-=======
->>>>>>> 932cf9c99e452f2f015a7b03962c7893835b6af1
+
 
 from keras.models import Sequential
 from keras.models import load_model
@@ -29,7 +27,6 @@ from behavioral_performance.utils import fileNames
 from RNNmodule.SequenceClass import Sequences
 idx = pd.IndexSlice
 
-<<<<<<< HEAD
 def create_model(sequence_length,
                  feature_dim,
                  RANDOM_STATE,
@@ -83,10 +80,7 @@ def create_model(sequence_length,
                   metrics = ['accuracy'])
     model.RANDOM_STATE = RANDOM_STATE
     return model
-=======
 
-
->>>>>>> 932cf9c99e452f2f015a7b03962c7893835b6af1
 
 def train_network(fileName, dataPrep, HDS):
 
@@ -107,11 +101,7 @@ def train_network(fileName, dataPrep, HDS):
     cellType_folders = {'RNN' : 'Models/RNN/OneHotBinaryMinimal/',
                         'LSTM' : 'Models/LSTM/Pablo/OneHotBinaryMinimal/'}
 
-<<<<<<< HEAD
     for cell_type, hd in itertools.product(['RNN'], HDS):
-=======
-    for cell_type, hd in itertools.product(['RNN', 'LSTM'], HDS):
->>>>>>> 932cf9c99e452f2f015a7b03962c7893835b6af1
 
 
         model_dir = ROOT + cellType_folders[cell_type] + dataPrep + '/'
@@ -126,7 +116,6 @@ def train_network(fileName, dataPrep, HDS):
         if not os.path.isdir(model_dir):
             os.mkdir(model_dir)
             os.chdir(model_dir)
-<<<<<<< HEAD
         else:
             os.chdir(model_dir)
 
@@ -135,7 +124,7 @@ def train_network(fileName, dataPrep, HDS):
         model = create_model(sequence_length, feature_dim, seqs.RANDOM_STATE,
                              hd, cell_type = 'RNN', dropout = 0.2)
         no_epochs = 100
-=======
+
 
         else:
             if not os.listdir(model_dir):
@@ -187,7 +176,6 @@ def train_network(fileName, dataPrep, HDS):
         model.compile(loss = 'binary_crossentropy',
                       optimizer = 'adam',
                       metrics = ['accuracy'])
->>>>>>> 932cf9c99e452f2f015a7b03962c7893835b6af1
 
         print 'started training: %s' %model_dir
         History = model.fit(x = seqs.X_train,
@@ -195,24 +183,20 @@ def train_network(fileName, dataPrep, HDS):
                             callbacks = callbacks,
                             validation_data = (seqs.X_validate, seqs.y_validate),
                             epochs = no_epochs,
-<<<<<<< HEAD
                             batch_size = 256,
                             verbose = 0)
 
         print 'finished training model: %s' %model_dir
         pickle.dump(History.history, open('loss_acc_history.p','wb'))
-=======
                             batch_size = 512,
                             verbose = 0)
 
         print 'finished training model: %s' %model_dir
         pickle.dump(History, open('loss_acc_history.p','wb'))
->>>>>>> 932cf9c99e452f2f015a7b03962c7893835b6af1
     return
 
 
 
-<<<<<<< HEAD
 datatype = ['Full','Last', 'Med']
 #adding artificial datasets
 artificial_datasets = ['PSR_TbyT_Saline_Rigged.p',
@@ -242,11 +226,11 @@ fileNames.append('DSR_TbyT_Naive_Saline.p')
 
 
 #CREATING NETWORK DIMENSIONS__________
-hidden_dimensions = [2, 5, 10, 20, 50, 100]
-hidden_dimensions_red = [5, 20, 50]
+hidden_dimensions = [5, 10, 20, 100]
+hidden_dimensions_red = [5, 50]
 
 HDS = np.zeros([69, 3], dtype = int)
->>>>>>> 932cf9c99e452f2f015a7b03962c7893835b6af1
+
 HDS[:len(hidden_dimensions), 0] = hidden_dimensions
 for index, (hd1, hd2) in enumerate(itertools.product(hidden_dimensions,
                                                      hidden_dimensions)):

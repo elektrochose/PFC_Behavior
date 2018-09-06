@@ -3,7 +3,6 @@ import os
 import pickle
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import OneHotEncoder
 idx = pd.IndexSlice
 
 ROOT = os.environ['HOME'] + '/python/'

@@ -3,35 +3,15 @@ import os
 import pickle
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import OneHotEncoder
+from behavioral_performance.tools import SequenceClass as SC
+Sequences = SC.Sequences
 idx = pd.IndexSlice
 
 ROOT = os.environ['HOME'] + '/python/'
 source = ROOT + 'DATA_structures/dataset_dataframes/'
+target = ROOT + 'DATA_structures/RNN_sequences/sequence_classification/'
 
-class Sequences:
-    def __init__(self,
-                 data_label,
-                 sequence_length = 30,
-                 RANDOM_STATE = 6,
-                 train_size = 0.5,
-                 validate_size = 0.25,
-                 test_size = 0.25):
 
-        assert train_size + validate_size + test_size == 1
-        self.header = {'sequence_length': sequence_length,
-                       'RANDOM_STATE' : RANDOM_STATE,
-                       'data_label' : data_label,
-                       'train_size' : train_size,
-                       'validate_size' : validate_size,
-                       'test_size' : test_size}
-
-        self.X_train = []
-        self.y_train = []
-        self.X_validate = []
-        self.y_validate = []
-        self.X_test = []
-        self.y_test = []
 
 
 def sess2sequences(sess, SEQ_LENGTH):
@@ -141,16 +121,19 @@ if __name__ == '__main__':
 
         mirror = [train_df]
         for label, session in train_df.groupby(axis=0, level = 'SessionID'):
-            print label
-            display(session.index)
+            session.loc[:,'AR'] = (session.loc[:,'AR'] + 1) % 2
             session.loc[:,'Choice'] = (session.loc[:,'Choice'] + 1) % 2
-            current_label = session.index.levels[0][session.index.labels[0][0]]
-            session.index.set_levels([current_label + '_mirror'],
-                                      level = 'SessionID', inplace = True)
+            index_tuples = [(x[0] + '_mirror', x[1], x[2]) for x in session.index]
+            new_index = \
+                pd.MultiIndex.from_tuples(
+                        [(x[0] + '_mirror', x[1], x[2]) for x in session.index],
+                        names = session.index.names)
+            session.index = new_index
             mirror.append(session)
         train_with_mirror = pd.concat(mirror, axis = 0)
-
-
+        train_with_mirror.sort_index(axis = 0, inplace = True)
+        #to turn on mirroring, uncomment next line
+        #train_df = train_with_mirror
 
         #first we do training set
         dataset_X = []
@@ -190,3 +173,5 @@ if __name__ == '__main__':
         assert X.shape[0] == y.shape[0]
         seqObj.X_test = X
         seqObj.y_test = y
+
+        pickle.dump(seqObj, open(target +  dataset_file, 'wb'))
