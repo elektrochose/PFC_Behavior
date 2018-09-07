@@ -9,7 +9,7 @@ idx = pd.IndexSlice
 
 ROOT = os.environ['HOME'] + '/python/'
 source = ROOT + 'DATA_structures/dataset_dataframes/'
-target = ROOT + 'DATA_structures/RNN_sequences/sequence_classification/'
+target = ROOT + 'DATA_structures/RNN_sequences/sequence_classification_mirror/'
 
 
 
@@ -133,7 +133,7 @@ if __name__ == '__main__':
         train_with_mirror = pd.concat(mirror, axis = 0)
         train_with_mirror.sort_index(axis = 0, inplace = True)
         #to turn on mirroring, uncomment next line
-        #train_df = train_with_mirror
+        train_df = train_with_mirror
 
         #first we do training set
         dataset_X = []
