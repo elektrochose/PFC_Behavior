@@ -2,6 +2,7 @@ from __future__ import division, print_function
 
 import os
 import glob
+import copy
 import pickle
 import numpy as np
 import pandas as pd
@@ -59,13 +60,14 @@ class SequenceIterator:
 
 
 
-def sess2sequences(sess, SEQ_LENGTH):
+def sess2sequences(sess_orig, SEQ_LENGTH):
     '''
     Create X and y arrays given a session dataframe. X is encoded in one-hot
     vector of dimension 4, by combining choice and reward information into one
     number. 2 choices by 2 rewards = 4. Y is just choice information (of the
     next trial)
     '''
+    sess = copy.deepcopy(sess_orig)
     sess['X'] = sess['Choice'] * 2 + sess['AR']
     sess['y'] = sess.Choice.shift(-1)
     sess.dropna(inplace = True)

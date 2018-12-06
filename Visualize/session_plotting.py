@@ -10,6 +10,7 @@ def plot_session_curve(window_size = 7,
 					   large_plot = True,
 					   DPI = 600,
 					   savefig = 0,
+					   plotErrors = 1,
 					   **kwargs):
 
 	'''
@@ -78,8 +79,8 @@ def plot_session_curve(window_size = 7,
 		if key == 'session':
 			curve_color = 'blue'
 		else:
-			curve_color = color_palette[0]
-			color_palette.pop(0)
+			curve_color = color_palette.pop(0)
+
 		ax.plot(curve, color = curve_color, label = key)
 
 	plt.xlim(0, noTrials)
@@ -97,7 +98,7 @@ def plot_session_curve(window_size = 7,
 		ax.axvspan(start, end, facecolor=colorblock, alpha=0.2)
 
 	#plot where the decoder made a mistake
-	if len(kwargs) > 1:
+	if len(kwargs) > 1 and plotErrors:
 		for l in errorDecoding:
 			if l >= 0 and l < noTrials:
 				plt.text(l, 0.5, 'x', color = 'red',

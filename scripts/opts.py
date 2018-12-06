@@ -4,34 +4,7 @@ import os
 import argparse
 import configparser
 import logging
-                        create_sequences(args.data_dir,
-                         SEQ_LENGTH = args.SEQ_LENGTH,
-                         RANDOM_STATE = args.RANDOM_STATE,
-                         MIRROR = args.MIRROR,
-                         SHUFFLE = args.SHUFFLE,
-                         train_size = args.train_size,
-                         validate_size = args.validate_size,
-                         test_size = args.test_size)
 
-
-    logging.info("Building model...")
-
-    model = create_model(args.SEQ_LENGTH,
-                         args.feature_dim,
-                         args.RANDOM_STATE,
-                         args.units,
-                         cell_type = args.RNNobj,
-                         dropout = args.dropout)
-
-
-    callbacks = \
-        [ModelCheckpoint(filepath = 'weights.{epoch:02d}-{val_acc:.2f}.hdf5',
-                         monitor = 'val_acc',
-                         save_best_only = True)]
-
-    logging.info("Begin training.")
-    History = model.fit_generator(SeqIterTrain,
-                                epochs = args.epochs,
 
 
 definitions = [
@@ -55,7 +28,7 @@ definitions = [
     ('RANDOM_STATE',             (int,   None,   "Seed for numpy RandomState")),
 
     # files
-    ('datadir',          (str,   '.',    "Directory containing patientXX/ directories.")),
+    ('datadir',          (str,   '.',    "Directory containing data.")),
     ('outdir',           (str,   '.',    "Directory to write output data.")),
 ]
 
@@ -92,8 +65,7 @@ def update_from_configfile(args, default, config, section, key):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
-        description="Train U-Net to segment right ventricles from cardiac "
-        "MRI images.")
+        description="Train RNN on Behavioral Data")
 
     for argname, kwargs in definitions:
         d = kwargs

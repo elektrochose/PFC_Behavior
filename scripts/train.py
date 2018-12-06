@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+
+from __future__ import division, print_function
+
 import os
 import logging
 
@@ -12,7 +16,7 @@ from dataset import create_sequences
 from rnnnet import create_model
 
 from keras.callbacks import ModelCheckpoint
-
+from keras import backend as K
 
 ROOT = os.environ['HOME'] + '/python/'
 
@@ -61,7 +65,7 @@ def train():
                                 callbacks = callbacks,
                                 verbose = 0)
     pickle.dump(History.history, open('loss_acc_history.p','wb'))
-    
+
     #let's clean up - delete all models except the best one
     contents = [w for w in os.listdir('.') if w.startswith('w')]
     scores = {w: float(w[w.find('-') + 1:-5]) for w in contents}
